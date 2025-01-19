@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="flex h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+    <!-- sidebar -->
+    <aside id="sidebar"
+        class="w-64 bg-white dark:bg-gray-800 flex flex-col h-full rounded border-r border-gray-200 dark:border-gray-700 shadow-lg">
+        <div class="p-4 text-center bg-blue-600 text-white">
+            <h1 class="text-3xl font-bold">Coder Army</h1>
+        </div>
+        <nav class="flex-1 px-4 space-y-4 mt-4">
+            <a href="lectureTracker.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Lecture Tracker
+            </a>
+            <a href="gymTracker.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Gym Tracker
+            </a>
+            <a href="calendar.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Calendar Planner
+            </a>
+            <a href="mindmap.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Mind Map
+            </a>
+        </nav>
+        <div id="overview" class="p-4 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+            <!-- Overview content will be generated here by JavaScript -->
+        </div>
+    </aside>
+
+    <!-- main content -->
+    <main class="flex-1 p-6 overflow-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-3xl font-bold text-gray-700 dark:text-gray-300">Gym Tracker</h1>
+                <!-- Dark mode toggle -->
+                <label for="dark-mode-toggle" class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" title="Toggle dark mode">
+                    <div
+                        class="relative w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                    </div>
+                </label>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <p id="progress-text" class="text-lg font-bold text-gray-700 dark:text-gray-300"></p>
+                <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Workout Schedule -->
+            <div id="workout-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be generated here by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="gymTracker.js"></script>
+</body>
+
+</html>

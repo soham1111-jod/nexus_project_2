@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
+    <style>
+        .day:hover {
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white dark:bg-gray-800 flex flex-col h-full border-r border-gray-200 dark:border-gray-700 shadow-lg">
+        <div class="p-4 text-center bg-blue-600 text-white">
+            <h1 class="text-3xl font-bold">Coder Army</h1>
+        </div>
+        <nav class="flex-1 px-4 space-y-4 mt-4">
+            <a href="lectureTracker.html" class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700">
+                Lecture Tracker
+            </a>
+            <a href="gymTracker.html" class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700">
+                Gym Tracker
+            </a>
+            <a href="calendar.html" class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700">
+                Calendar Planner
+            </a>
+            <a href="mindmap.html" class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700">
+                Mind Map
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 dark:bg-gray-900">
+        <h2 class="text-2xl font-bold mb-4">📅 Calendar Planner</h2>
+        <div id="calendar" class="grid grid-cols-7 gap-4"></div>
+        <div id="event-list" class="mt-8">
+            <h3 class="text-lg font-bold mb-2">Scheduled Events</h3>
+            <ul id="event-items" class="list-disc ml-4"></ul>
+        </div>
+    </main>
+
+    <script>
+        const today = dayjs();
+        const calendarContainer = document.getElementById("calendar");
+        const events = JSON.parse(localStorage.getItem("events")) || {};
+
+        function renderCalendar() {
+            calendarContainer.innerHTML = "";
+            const startOfMonth = today.startOf("month").day();
+            const daysInMonth = today.daysInMonth();
+
+            for (let i = 0; i < startOfMonth; i++) {
+                calendarContainer.innerHTML += `<div></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = today.date(day).format("YYYY-MM-DD");
+                const hasEvent = events[date] ? "bg-blue-100" : "";
+                calendarContainer.innerHTML += `
+                    <div class="day p-4 rounded ${hasEvent}" onclick="addEvent('${date}')">
+                        ${day}
+                    </div>`;
+            }
+        }
+
+        function addEvent(date) {
+            const eventTitle = prompt("Enter event title:");
+            if (eventTitle) {
+                if (!events[date]) events[date] = [];
+                events[date].push(eventTitle);
+                localStorage.setItem("events", JSON.stringify(events));
+                renderEvents();
+                renderCalendar();
+            }
+        }
+
+        function renderEvents() {
+            const eventList = document.getElementById("event-items");
+            eventList.innerHTML = "";
+            for (const date in events) {
+                events[date].forEach(event => {
+                    eventList.innerHTML += `<li>${date}: ${event}</li>`;
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCalendar();
+            renderEvents();
+        });
+    </script>
+</body>
+</html>

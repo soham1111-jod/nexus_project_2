@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Creator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+</head>
+
+<body class="flex h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+    <!-- Sidebar -->
+    <aside id="sidebar"
+        class="w-64 bg-white dark:bg-gray-800 flex flex-col h-full rounded border-r border-gray-200 dark:border-gray-700 shadow-lg">
+        <div class="p-4 text-center bg-blue-600 text-white">
+            <h1 class="text-3xl font-bold">Coder Army</h1>
+        </div>
+        <nav class="flex-1 px-4 space-y-4 mt-4">
+            <a href="lectureTracker.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Lecture Tracker
+            </a>
+            <a href="gymTracker.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Gym Tracker
+            </a>
+            <a href="calendar.html"
+                class="block p-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700 hover:text-blue-600 dark:hover:text-blue-300">
+                Calendar Planner
+            </a>
+            <a href="mindmap.html"
+                class="block p-3 rounded text-lg font-semibold bg-blue-100 dark:bg-blue-700 text-blue-600 dark:text-blue-300">
+                Mind Map
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-3xl font-bold text-gray-700 dark:text-gray-300">Mind Map Creator</h1>
+                <!-- Dark Mode Toggle -->
+                <label for="dark-mode-toggle" class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" title="Toggle dark mode">
+                    <div
+                        class="relative w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                    </div>
+                </label>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="flex gap-4 mb-4">
+                <button id="add-text-btn"
+                    class="p-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Add Text</button>
+                <button id="draw-line-btn"
+                    class="p-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Draw Line</button>
+                <button id="erase-btn"
+                    class="p-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition">Erase</button>
+                <button id="clear-map-btn"
+                    class="p-2 px-4 bg-gray-600 text-white rounded hover:bg-gray-700 transition">Clear</button>
+                <button id="save-map-btn"
+                    class="p-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 transition">Save</button>
+            </div>
+
+            <!-- Canvas -->
+            <div class="relative">
+                <canvas id="mindmap-container" class="border border-gray-300 rounded shadow"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Fabric.js canvas
+        const canvas = new fabric.Canvas('mindmap-container', {
+            backgroundColor: '#f9fafb',
+            width: window.innerWidth - 300, // Adjust for sidebar width
+            height: window.innerHeight - 160, // Adjust for header and padding
+        });
+
+        // Toolbar Actions
+        let mode = '';
+
+        const setMode = (newMode) => {
+            mode = newMode;
+            console.log(`Mode: ${mode}`);
+        };
+
+        // Add Text
+        document.getElementById('add-text-btn').addEventListener('click', () => {
+            setMode('add-text');
+            const textbox = new fabric.Textbox('New Node', {
+                left: 100,
+                top: 100,
+                width: 150,
+                fontSize: 16,
+                fill: '#374151',
+                textAlign: 'center',
+                backgroundColor: '#e5e7eb',
+                borderColor: '#cbd5e0',
+            });
+            canvas.add(textbox).setActiveObject(textbox);
+        });
+
+        // Draw Line
+        let line, isDrawing = false;
+        document.getElementById('draw-line-btn').addEventListener('click', () => {
+            setMode('draw-line');
+            canvas.on('mouse:down', (o) => {
+                if (mode === 'draw-line') {
+                    isDrawing = true;
+                    const pointer = canvas.getPointer(o.e);
+                    const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+                    line = new fabric.Line(points, {
+                        strokeWidth: 2,
+                        fill: '#4a5568',
+                        stroke: '#4a5568',
+                        originX: 'center',
+                        originY: 'center',
+                    });
+                    canvas.add(line);
+                }
+            });
+
+            canvas.on('mouse:move', (o) => {
+                if (isDrawing && line) {
+                    const pointer = canvas.getPointer(o.e);
+                    line.set({ x2: pointer.x, y2: pointer.y });
+                    canvas.renderAll();
+                }
+            });
+
+            canvas.on('mouse:up', () => {
+                isDrawing = false;
+            });
+        });
+
+        // Erase
+        document.getElementById('erase-btn').addEventListener('click', () => {
+            setMode('erase');
+            canvas.on('mouse:down', (o) => {
+                if (mode === 'erase') {
+                    const activeObject = canvas.getActiveObject();
+                    if (activeObject) canvas.remove(activeObject);
+                }
+            });
+        });
+
+        // Clear Map
+        document.getElementById('clear-map-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear the map?')) {
+                canvas.clear();
+                canvas.backgroundColor = '#f9fafb';
+            }
+        });
+
+        // Save Map
+        document.getElementById('save-map-btn').addEventListener('click', () => {
+            const dataURL = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'mindmap.png';
+            link.click();
+        });
+
+        // Dark Mode Toggle
+        document.getElementById('dark-mode-toggle').addEventListener('change', (e) => {
+            document.body.classList.toggle('dark');
+            canvas.backgroundColor = document.body.classList.contains('dark') ? '#1f2937' : '#f9fafb';
+            canvas.renderAll();
+        });
+
+        // Resize canvas dynamically
+        window.addEventListener('resize', () => {
+            canvas.setWidth(window.innerWidth - 300);
+            canvas.setHeight(window.innerHeight - 160);
+            canvas.renderAll();
+        });
+    </script>
+</body>
+
+</html>
